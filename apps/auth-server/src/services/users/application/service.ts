@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from '../infrastructure/repository';
 import { User } from '../domain/model';
 import { PasswordHashService } from '../domain/services';
-import { RegisterCommand, LoginCommand } from '../commands';
+import { RegisterCommand, LoginCommand, ChangeRoleCommand } from '../commands';
 import { unauthorized } from '@libs/exceptions';
 @Injectable()
 export class UsersService {
@@ -45,5 +45,15 @@ export class UsersService {
     });
 
     return { accessToken };
+  }
+
+  async changeRole(userId: string, changeRoleCommand: ChangeRoleCommand) {
+    const user = await this.userRepository.findOneOrFail(userId);
+
+    user.changeRole(changeRoleCommand.role);
+
+    await this.userRepository.save([user]);
+
+    return user;
   }
 }

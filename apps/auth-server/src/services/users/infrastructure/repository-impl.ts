@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { UserRepository } from './repository';
 import { User } from '../domain/model';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, MongooseError } from 'mongoose';
+import { Model } from 'mongoose';
 import { User as UserEntity } from '../domain/model'; // UserDocument 또는 적절한 Mongoose 스키마/모델 클래스로 변경해야 합니다.
-import { conflict, internalServerError } from '@libs/exceptions';
+import { conflict, internalServerError, notFound } from '@libs/exceptions';
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {
@@ -31,5 +31,16 @@ export class UserRepositoryImpl implements UserRepository {
   async findOneByEmail(email: string): Promise<User | null> {
     const user = await this.userModel.findOne({ email });
     return user ? new User(user) : null;
+  }
+
+  async findOneOrFail(id: string): Promise<User> {
+    const user = await this.userModel.findById(id);
+    if (!user) {
+      throw notFound('User not found.', {
+        errorMessage: '존재하지 않는 사용자입니다.',
+      });
+    }
+
+    return new User(user);
   }
 }

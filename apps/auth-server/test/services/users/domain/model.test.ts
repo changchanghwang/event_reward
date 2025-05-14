@@ -1,6 +1,6 @@
 import { v7 } from 'uuid';
 import { PasswordHashService } from '@services/users/domain/services';
-import { User } from '@services/users/domain/model';
+import { Role, User } from '@services/users/domain/model';
 import { userOf } from '@test';
 
 jest.mock('@services/users/domain/services');
@@ -66,6 +66,18 @@ describe('User model test', () => {
           '이메일 또는 비밀번호가 일치하지 않습니다.',
         );
       }
+    });
+  });
+
+  describe('changeRole', () => {
+    test('role을 변경한다.', () => {
+      const user = userOf({
+        role: Role.USER,
+      });
+
+      user.changeRole(Role.OPERATOR);
+
+      expect(user.role).toBe(Role.OPERATOR);
     });
   });
 });

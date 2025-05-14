@@ -75,6 +75,10 @@ export class User {
       });
     }
   }
+
+  changeRole(role: Role) {
+    this.role = role;
+  }
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

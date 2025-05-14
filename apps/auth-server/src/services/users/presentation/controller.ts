@@ -4,9 +4,11 @@ import {
   Body,
   ClassSerializerInterceptor,
   UseInterceptors,
+  Patch,
+  Param,
 } from '@nestjs/common';
 import { UsersService } from '../application/service';
-import { RegisterCommand, LoginCommand } from '../commands';
+import { RegisterCommand, LoginCommand, ChangeRoleCommand } from '../commands';
 
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -21,5 +23,13 @@ export class UserController {
   @Post('/login')
   async login(@Body() loginCommand: LoginCommand) {
     return this.usersService.login(loginCommand);
+  }
+
+  @Patch('/:id/role')
+  async changeRole(
+    @Param('id') id: string,
+    @Body() changeRoleCommand: ChangeRoleCommand,
+  ) {
+    return this.usersService.changeRole(id, changeRoleCommand);
   }
 }
