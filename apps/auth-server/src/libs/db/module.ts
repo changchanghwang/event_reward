@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { User, UserSchema } from '@services/users/domain/model';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MongooseModule } from '@nestjs/mongoose';
       },
       inject: [ConfigService],
     }),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   exports: [MongooseModule],
 })
