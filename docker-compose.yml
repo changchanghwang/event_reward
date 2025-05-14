@@ -22,6 +22,7 @@ services:
       - DATABASE_USER=root
       - DATABASE_PASSWORD=1234
       - DATABASE_NAME=auth
+      - JWT_SECRET=thisistestjwtsecretfordevelopmentenvironment
     ports:
       - 4040:4040
     restart: always

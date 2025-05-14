@@ -6,7 +6,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from '../application/service';
-import { RegisterCommand } from '../commands/register';
+import { RegisterCommand, LoginCommand } from '../commands';
 
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -16,5 +16,10 @@ export class UserController {
   @Post('/')
   async register(@Body() registerCommand: RegisterCommand) {
     return this.usersService.register(registerCommand);
+  }
+
+  @Post('/login')
+  async login(@Body() loginCommand: LoginCommand) {
+    return this.usersService.login(loginCommand);
   }
 }

@@ -3,6 +3,7 @@ import { Document } from 'mongoose';
 import { v7 } from 'uuid';
 import { Exclude } from 'class-transformer';
 import type { PasswordHashService } from './services';
+import { unauthorized } from '@libs/exceptions';
 
 export type UserDocument = User & Document;
 
@@ -59,6 +60,18 @@ export class User {
     const hashedPassword = await passwordHashService.hash(password);
 
     return new User({ id, username, email, password: hashedPassword });
+  }
+
+  async validatePassword(
+    password: string,
+    passwordHashService: PasswordHashService,
+  ) {
+    const isValid = await passwordHashService.compare(password, this.password);
+    if (!isValid) {
+      throw unauthorized('Invalid password.', {
+        errorMessage: '이메일 또는 비밀번호가 일치하지 않습니다.',
+      });
+    }
   }
 }
 
