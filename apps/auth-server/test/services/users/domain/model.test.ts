@@ -33,6 +33,7 @@ describe('User model test', () => {
         username: 'test-username',
         email: 'test-email',
         password: 'test-hashed-password',
+        role: 'USER',
       });
     });
   });

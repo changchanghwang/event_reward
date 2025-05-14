@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { SignUpCommand } from '../commands/sign-up';
 import { UserRepository } from '../infrastructure/repository';
 import { User } from '../domain/model';
 import { PasswordHashService } from '../domain/services';
+import { RegisterCommand } from '../commands/register';
 @Injectable()
 export class UsersService {
   constructor(
@@ -10,11 +10,11 @@ export class UsersService {
     private readonly passwordHashService: PasswordHashService,
   ) {}
 
-  async signUp(signUpCommand: SignUpCommand): Promise<User> {
+  async register(registerCommand: RegisterCommand): Promise<User> {
     const user = await User.from({
-      username: signUpCommand.username,
-      email: signUpCommand.email,
-      password: signUpCommand.password,
+      username: registerCommand.username,
+      email: registerCommand.email,
+      password: registerCommand.password,
       passwordHashService: this.passwordHashService,
     });
 

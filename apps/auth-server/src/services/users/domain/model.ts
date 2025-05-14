@@ -6,6 +6,13 @@ import type { PasswordHashService } from './services';
 
 export type UserDocument = User & Document;
 
+export enum Role {
+  USER = 'USER',
+  OPERATOR = 'OPERATOR',
+  AUDITOR = 'AUDITOR',
+  ADMIN = 'ADMIN',
+}
+
 @Schema({ timestamps: true })
 export class User {
   @Prop({ required: true, unique: true, trim: true })
@@ -21,6 +28,9 @@ export class User {
   @Exclude()
   password: string;
 
+  @Prop({ required: true })
+  role: Role;
+
   constructor(args: {
     id: string;
     username: string;
@@ -31,6 +41,7 @@ export class User {
     this.username = args.username;
     this.email = args.email;
     this.password = args.password;
+    this.role = Role.USER; // 초기값은 USER
   }
 
   static async from({

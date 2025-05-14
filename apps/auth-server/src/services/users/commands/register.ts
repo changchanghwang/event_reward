@@ -1,6 +1,6 @@
 import { IsString, IsEmail, IsNotEmpty } from 'class-validator';
 
-export class SignUpCommand {
+export class RegisterCommand {
   @IsString()
   @IsNotEmpty()
   username: string;
