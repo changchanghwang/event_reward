@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { UsersModule } from './services/users/module';
+import { UsersModule } from '@services/users/module';
 import { HealthModule } from '@libs/health';
-import { DatabaseModule } from './libs/db';
+import { DatabaseModule } from '@libs/db';
 
 @Module({
   imports: [
