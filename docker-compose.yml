@@ -1,0 +1,21 @@
+services:
+  auth-db:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=1234
+
+  auth-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.auth.dev
+    environment:
+      - PORT=4040
+    ports:
+      - 4040:4040
+    restart: always
+    volumes:
+      - ./apps/auth-server/src/:/apps/auth-server/src/
+      - ./apps/auth-server/tsconfig.json:/apps/auth-server/tsconfig.json

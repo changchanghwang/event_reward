@@ -1,0 +1,11 @@
+FROM node:18-alpine
+
+WORKDIR /apps/auth-server
+COPY ./apps/auth-server/package*.json ./
+RUN npm ci
+
+COPY ./apps/auth-server/ ./
+
+EXPOSE $PORT
+
+CMD ["npm", "run", "start:dev"]
