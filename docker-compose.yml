@@ -6,6 +6,10 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=1234
+      - MONGO_INITDB_DATABASE=auth
+    volumes:
+      - auth_mongo_data:/data/db
+      - ./scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
 
   auth-server:
     build:
@@ -13,9 +17,19 @@ services:
       dockerfile: Dockerfile.auth.dev
     environment:
       - PORT=4040
+      - DATABASE_HOST=auth-db
+      - DATABASE_PORT=27017
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=1234
+      - DATABASE_NAME=auth
     ports:
       - 4040:4040
     restart: always
     volumes:
       - ./apps/auth-server/src/:/apps/auth-server/src/
       - ./apps/auth-server/tsconfig.json:/apps/auth-server/tsconfig.json
+    depends_on:
+      - auth-db
+
+volumes:
+  auth_mongo_data:
