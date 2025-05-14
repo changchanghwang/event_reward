@@ -10,6 +10,7 @@ module.exports = {
   moduleNameMapper: {
     '^@libs/(.*)$': '<rootDir>/src/libs/$1',
     '^@services/(.*)$': '<rootDir>/src/services/$1',
+    '^@test$': '<rootDir>/test',
   },
   preset: 'ts-jest',
   testMatch: null,

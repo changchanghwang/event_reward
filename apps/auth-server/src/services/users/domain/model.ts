@@ -38,11 +38,13 @@ export class User {
     email: string;
     password: string;
   }) {
-    this.id = args.id;
-    this.username = args.username;
-    this.email = args.email;
-    this.password = args.password;
-    this.role = Role.USER; // 초기값은 USER
+    if (args) {
+      this.id = args.id;
+      this.username = args.username;
+      this.email = args.email;
+      this.password = args.password;
+      this.role = Role.USER; // 초기값은 USER
+    }
   }
 
   static async from({
