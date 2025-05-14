@@ -4,6 +4,7 @@ import { UserRepositoryImpl } from './infrastructure/repository-impl';
 import { User, UserSchema } from './domain/model';
 import { UserController } from './presentation/controller';
 import { UsersService } from './application';
+import { PasswordHashService } from './domain/services';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
@@ -15,6 +16,7 @@ import { UsersService } from './application';
       provide: 'UserRepository',
       useClass: UserRepositoryImpl,
     },
+    PasswordHashService,
   ],
   exports: [],
 })
