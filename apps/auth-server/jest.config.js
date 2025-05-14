@@ -9,7 +9,6 @@ module.exports = {
   moduleDirectories: ['node_modules'],
   moduleNameMapper: {
     '^@libs/(.*)$': '<rootDir>/src/libs/$1',
-    '^@services/(.*)$': '<rootDir>/src/services/$1',
   },
   preset: 'ts-jest',
   testMatch: null,
