@@ -98,6 +98,12 @@ export class Event {
   }
 
   cancel() {
+    if (this.status !== EventStatus.PENDING) {
+      throw badRequest('Event is not pending', {
+        errorMessage: '이벤트가 대기상태가 아닙니다.',
+      });
+    }
+
     this.status = EventStatus.CANCELLED;
     this.transitAt = new Date();
   }

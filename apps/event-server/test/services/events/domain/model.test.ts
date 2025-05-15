@@ -144,4 +144,34 @@ describe('Event Model test', () => {
       }
     });
   });
+
+  describe('cancel test', () => {
+    test('event를 취소할 수 있다.', () => {
+      const event = eventOf({
+        status: EventStatus.PENDING,
+      });
+
+      event.cancel();
+
+      expect(event.status).toBe(EventStatus.CANCELLED);
+    });
+
+    test.each(
+      Object.values(EventStatus).filter(
+        (status) => status !== EventStatus.PENDING,
+      ),
+    )('PENDING 상태의 이벤트가 아니라면 에러를 던진다.', (status) => {
+      const event = eventOf({ status });
+
+      expect.assertions(2);
+      try {
+        event.cancel();
+      } catch (e) {
+        expect(e.message).toBe('Event is not pending');
+        expect(e.getResponse().errorMessage).toBe(
+          '이벤트가 대기상태가 아닙니다.',
+        );
+      }
+    });
+  });
 });
