@@ -9,7 +9,7 @@ export enum EventType {
   ATTENDANCE = 'ATTENDANCE',
 }
 
-enum EventStatus {
+export enum EventStatus {
   PENDING = 'PENDING',
   PROCESSING = 'PROCESSING',
   COMPLETED = 'COMPLETED',
