@@ -1,0 +1,11 @@
+FROM node:18-alpine
+
+WORKDIR /apps/event-server
+COPY ./apps/event-server/package*.json ./
+RUN npm ci
+
+COPY ./apps/event-server/ ./
+
+EXPOSE $PORT
+
+CMD ["npm", "run", "start:dev"]

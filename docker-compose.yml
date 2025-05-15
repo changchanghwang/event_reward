@@ -9,7 +9,7 @@ services:
       - MONGO_INITDB_DATABASE=auth
     volumes:
       - auth_mongo_data:/data/db
-      - ./scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - ./scripts/auth-db-init.js:/docker-entrypoint-initdb.d/auth-db-init.js
 
   auth-server:
     build:
@@ -31,6 +31,40 @@ services:
       - ./apps/auth-server/tsconfig.json:/apps/auth-server/tsconfig.json
     depends_on:
       - auth-db
+  event-db:
+    image: mongo:latest
+    ports:
+      - 27018:27018
+    command: mongod --port 27018
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=1234
+      - MONGO_INITDB_DATABASE=event
+    volumes:
+      - event_mongo_data:/data/db
+      - ./scripts/event-db-init.js:/docker-entrypoint-initdb.d/event-db-init.js
+
+  event-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.event.dev
+    environment:
+      - PORT=4041
+      - DATABASE_HOST=event-db
+      - DATABASE_PORT=27018
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=1234
+      - DATABASE_NAME=event
+      - JWT_SECRET=thisistestjwtsecretfordevelopmentenvironment
+    ports:
+      - 4041:4041
+    restart: always
+    volumes:
+      - ./apps/event-server/src/:/apps/event-server/src/
+      - ./apps/event-server/tsconfig.json:/apps/event-server/tsconfig.json
+    depends_on:
+      - event-db
 
 volumes:
   auth_mongo_data:
+  event_mongo_data:
