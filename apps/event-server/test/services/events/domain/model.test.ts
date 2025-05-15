@@ -110,4 +110,38 @@ describe('Event Model test', () => {
       }
     });
   });
+
+  describe('complete test', () => {
+    test('event를 완료할 수 있다.', () => {
+      const now = new Date('2025-05-15T00:00:00.000Z');
+      jest.setSystemTime(now);
+
+      const event = eventOf({
+        status: EventStatus.PROCESSING,
+      });
+
+      event.complete();
+
+      expect(event.status).toBe(EventStatus.COMPLETED);
+      expect(event.endAt).toEqual(now);
+    });
+
+    test.each(
+      Object.values(EventStatus).filter(
+        (status) => status !== EventStatus.PROCESSING,
+      ),
+    )('PROCESSING 상태의 이벤트가 아니라면 에러를 던진다.', (status) => {
+      const event = eventOf({ status });
+
+      expect.assertions(2);
+      try {
+        event.complete();
+      } catch (e) {
+        expect(e.message).toBe('Event is not processing');
+        expect(e.getResponse().errorMessage).toBe(
+          '이벤트가 진행 중이 아닙니다.',
+        );
+      }
+    });
+  });
 });
