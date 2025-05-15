@@ -12,4 +12,5 @@ export interface EventRepository {
     options?: { limit: number; page: number },
   ): Promise<Event[]>;
   count(conditions: FindCondition): Promise<number>;
+  findOneOrFail(id: Event['id']): Promise<Event>;
 }

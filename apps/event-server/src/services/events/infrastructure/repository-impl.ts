@@ -3,7 +3,7 @@ import { EventRepository } from './repository';
 import { Event, EventStatus, EventType } from '../domain/model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { conflict, internalServerError } from '@libs/exceptions';
+import { conflict, internalServerError, notFound } from '@libs/exceptions';
 import { Repository } from '@libs/ddd/repository';
 
 @Injectable()
@@ -59,5 +59,17 @@ export class EventRepositoryImpl extends Repository implements EventRepository {
         ...this.strip({ type, status }),
       })
       .exec();
+  }
+
+  async findOneOrFail(id: Event['id']): Promise<Event> {
+    const event = await this.eventModel.findOne({ id });
+
+    if (!event) {
+      throw notFound('Event not found', {
+        errorMessage: '존재하지 않는 이벤트입니다.',
+      });
+    }
+
+    return new Event(event);
   }
 }

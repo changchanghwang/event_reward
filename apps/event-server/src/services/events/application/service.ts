@@ -37,4 +37,8 @@ export class EventService {
 
     return { items: events, count };
   }
+
+  async retrieve(id: string): Promise<Event> {
+    return await this.eventRepository.findOneOrFail(id);
+  }
 }

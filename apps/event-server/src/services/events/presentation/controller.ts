@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { EventService } from '@services/events/application/service';
 import { ListCommand } from '@services/events/commands/list';
 import { RegisterCommand } from '@services/events/commands/register';
@@ -15,5 +15,10 @@ export class EventController {
   @Get()
   async list(@Query() listCommand: ListCommand) {
     return this.eventService.list(listCommand);
+  }
+
+  @Get(':id')
+  async retrieve(@Param('id') id: string) {
+    return this.eventService.retrieve(id);
   }
 }
