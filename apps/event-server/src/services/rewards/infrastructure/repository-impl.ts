@@ -19,7 +19,14 @@ export class RewardRepositoryImpl
 
   async save(rewards: Reward[]): Promise<void> {
     try {
-      await this.rewardModel.insertMany(rewards);
+      const operations = rewards.map((reward) => ({
+        updateOne: {
+          filter: { id: reward.id },
+          update: { $set: reward },
+          upsert: true,
+        },
+      }));
+      await this.rewardModel.bulkWrite(operations);
     } catch (e) {
       if (e.message.includes('duplicate key error')) {
         throw conflict('Reward already exists', {

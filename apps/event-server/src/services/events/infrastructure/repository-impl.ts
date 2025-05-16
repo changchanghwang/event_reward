@@ -16,7 +16,14 @@ export class EventRepositoryImpl extends Repository implements EventRepository {
 
   async save(events: Event[]): Promise<void> {
     try {
-      await this.eventModel.insertMany(events);
+      const operations = events.map((event) => ({
+        updateOne: {
+          filter: { id: event.id },
+          update: { $set: event },
+          upsert: true,
+        },
+      }));
+      await this.eventModel.bulkWrite(operations);
     } catch (e) {
       if (e.message.includes('duplicate key error')) {
         throw conflict('Event already exists', {
