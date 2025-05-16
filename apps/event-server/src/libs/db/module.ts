@@ -1,9 +1,12 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { EventSchema, Event } from '@services/events/domain/model';
+import { RewardRequest } from '@services/reward-requests/domain/model';
+import { RewardRequestSchema } from '@services/reward-requests/domain/model';
 import { RewardSchema, Reward } from '@services/rewards/domain/model';
 
+@Global()
 @Module({
   imports: [
     MongooseModule.forRootAsync({
@@ -31,6 +34,10 @@ import { RewardSchema, Reward } from '@services/rewards/domain/model';
       {
         name: Reward.name,
         schema: RewardSchema,
+      },
+      {
+        name: RewardRequest.name,
+        schema: RewardRequestSchema,
       },
     ]),
   ],
