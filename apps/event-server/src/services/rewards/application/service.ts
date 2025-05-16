@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { RegisterCommand } from '@services/rewards/commands/register';
-import { Reward } from '@services/rewards/domain/model';
+import { RegisterCommand, ListCommand } from '../commands';
+import { Reward } from '../domain/model';
 import { RewardRepository } from '../infrastructure/repository';
 
 @Injectable()
@@ -21,5 +21,19 @@ export class RewardService {
     await this.rewardRepository.save([reward]);
 
     return reward;
+  }
+
+  async list(listCommand: ListCommand): Promise<Paginated<Reward>> {
+    const { eventId, page, limit } = listCommand;
+
+    const [rewards, count] = await Promise.all([
+      this.rewardRepository.find({ eventId }, { page, limit }),
+      this.rewardRepository.count({ eventId }),
+    ]);
+
+    return {
+      items: rewards,
+      count,
+    };
   }
 }
