@@ -14,7 +14,7 @@ export function eventOf(args: {
     type: args.type ?? EventType.ATTENDANCE,
     startAt: args.startAt,
     endAt: args.endAt,
-    status: args.status ?? EventStatus.PENDING,
+    status: args.status ?? EventStatus.SCHEDULED,
     transitAt: args.transitAt,
   });
 }

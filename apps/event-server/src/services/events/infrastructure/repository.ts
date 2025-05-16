@@ -1,6 +1,7 @@
 import type { Event, EventStatus, EventType } from '../domain/model';
 
 type FindCondition = {
+  id?: string;
   type?: EventType;
   status?: EventStatus;
 };

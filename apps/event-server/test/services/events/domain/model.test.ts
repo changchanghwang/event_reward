@@ -36,7 +36,7 @@ describe('Event Model test', () => {
         type: EventType.ATTENDANCE,
         startAt: new Date('2025-06-01T09:00:00.000Z'),
         endAt: new Date('2025-06-30T09:00:00.000Z'),
-        status: EventStatus.PENDING,
+        status: EventStatus.SCHEDULED,
       });
     });
 
@@ -92,9 +92,9 @@ describe('Event Model test', () => {
 
     test.each(
       Object.values(EventStatus).filter(
-        (status) => status !== EventStatus.PENDING,
+        (status) => status !== EventStatus.SCHEDULED,
       ),
-    )('PENDING 상태의 이벤트가 아니라면 에러를 던진다.', (status) => {
+    )('SCHEDULED 상태의 이벤트가 아니라면 에러를 던진다.', (status) => {
       const event = eventOf({
         status,
       });
@@ -103,7 +103,7 @@ describe('Event Model test', () => {
       try {
         event.start();
       } catch (e) {
-        expect(e.message).toBe('Event is not pending');
+        expect(e.message).toBe('Event is not SCHEDULED');
         expect(e.getResponse().errorMessage).toBe(
           '이벤트가 대기상태가 아닙니다.',
         );
@@ -148,7 +148,7 @@ describe('Event Model test', () => {
   describe('cancel test', () => {
     test('event를 취소할 수 있다.', () => {
       const event = eventOf({
-        status: EventStatus.PENDING,
+        status: EventStatus.SCHEDULED,
       });
 
       event.cancel();
@@ -158,16 +158,16 @@ describe('Event Model test', () => {
 
     test.each(
       Object.values(EventStatus).filter(
-        (status) => status !== EventStatus.PENDING,
+        (status) => status !== EventStatus.SCHEDULED,
       ),
-    )('PENDING 상태의 이벤트가 아니라면 에러를 던진다.', (status) => {
+    )('SCHEDULED 상태의 이벤트가 아니라면 에러를 던진다.', (status) => {
       const event = eventOf({ status });
 
       expect.assertions(2);
       try {
         event.cancel();
       } catch (e) {
-        expect(e.message).toBe('Event is not pending');
+        expect(e.message).toBe('Event is not SCHEDULED');
         expect(e.getResponse().errorMessage).toBe(
           '이벤트가 대기상태가 아닙니다.',
         );

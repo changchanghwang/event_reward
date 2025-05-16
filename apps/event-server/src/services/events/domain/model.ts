@@ -10,7 +10,7 @@ export enum EventType {
 }
 
 export enum EventStatus {
-  PENDING = 'PENDING',
+  SCHEDULED = 'SCHEDULED',
   PROCESSING = 'PROCESSING',
   COMPLETED = 'COMPLETED',
   CANCELLED = 'CANCELLED',
@@ -47,7 +47,7 @@ export class Event {
       this.type = args.type;
       this.startAt = args.startAt;
       this.endAt = args.endAt;
-      this.status = EventStatus.PENDING;
+      this.status = EventStatus.SCHEDULED;
     }
   }
 
@@ -73,8 +73,8 @@ export class Event {
   }
 
   start() {
-    if (this.status !== EventStatus.PENDING) {
-      throw badRequest('Event is not pending', {
+    if (this.status !== EventStatus.SCHEDULED) {
+      throw badRequest('Event is not SCHEDULED', {
         errorMessage: '이벤트가 대기상태가 아닙니다.',
       });
     }
@@ -98,8 +98,8 @@ export class Event {
   }
 
   cancel() {
-    if (this.status !== EventStatus.PENDING) {
-      throw badRequest('Event is not pending', {
+    if (this.status !== EventStatus.SCHEDULED) {
+      throw badRequest('Event is not SCHEDULED', {
         errorMessage: '이벤트가 대기상태가 아닙니다.',
       });
     }
