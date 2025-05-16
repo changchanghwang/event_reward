@@ -14,5 +14,6 @@ import { DatabaseModule } from '@libs/db/module';
       useClass: EventRepositoryImpl,
     },
   ],
+  exports: ['EventRepository'],
 })
 export class EventsModule {}
