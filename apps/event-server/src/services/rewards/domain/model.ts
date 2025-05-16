@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import type { RegisterRewardValidator } from '@services/rewards/domain/services';
 import { Document } from 'mongoose';
 import { v7 } from 'uuid';
 
@@ -43,12 +44,15 @@ export class Reward {
     }
   }
 
-  static from(args: {
+  static async from(args: {
     type: RewardType;
     amount: number;
     eventId: string;
     referenceId?: string;
-  }): Reward {
+    registerValidator: RegisterRewardValidator;
+  }): Promise<Reward> {
+    await args.registerValidator.validate(args.eventId);
+
     return new Reward({
       id: v7(),
       type: args.type,

@@ -130,19 +130,22 @@ describe('Event Model test', () => {
       Object.values(EventStatus).filter(
         (status) => status !== EventStatus.PROCESSING,
       ),
-    )('PROCESSING 상태의 이벤트가 아니라면 에러를 던진다.', (status) => {
-      const event = eventOf({ status });
+    )(
+      'PROCESSING 상태의 이벤트가 아니라면 에러를 던진다. - status: %s',
+      (status) => {
+        const event = eventOf({ status });
 
-      expect.assertions(2);
-      try {
-        event.complete();
-      } catch (e) {
-        expect(e.message).toBe('Event is not processing');
-        expect(e.getResponse().errorMessage).toBe(
-          '이벤트가 진행 중이 아닙니다.',
-        );
-      }
-    });
+        expect.assertions(2);
+        try {
+          event.complete();
+        } catch (e) {
+          expect(e.message).toBe('Event is not processing');
+          expect(e.getResponse().errorMessage).toBe(
+            '이벤트가 진행 중이 아닙니다.',
+          );
+        }
+      },
+    );
   });
 
   describe('cancel test', () => {
@@ -160,18 +163,21 @@ describe('Event Model test', () => {
       Object.values(EventStatus).filter(
         (status) => status !== EventStatus.SCHEDULED,
       ),
-    )('SCHEDULED 상태의 이벤트가 아니라면 에러를 던진다.', (status) => {
-      const event = eventOf({ status });
+    )(
+      'SCHEDULED 상태의 이벤트가 아니라면 에러를 던진다. - status: %s',
+      (status) => {
+        const event = eventOf({ status });
 
-      expect.assertions(2);
-      try {
-        event.cancel();
-      } catch (e) {
-        expect(e.message).toBe('Event is not SCHEDULED');
-        expect(e.getResponse().errorMessage).toBe(
-          '이벤트가 대기상태가 아닙니다.',
-        );
-      }
-    });
+        expect.assertions(2);
+        try {
+          event.cancel();
+        } catch (e) {
+          expect(e.message).toBe('Event is not SCHEDULED');
+          expect(e.getResponse().errorMessage).toBe(
+            '이벤트가 대기상태가 아닙니다.',
+          );
+        }
+      },
+    );
   });
 });
