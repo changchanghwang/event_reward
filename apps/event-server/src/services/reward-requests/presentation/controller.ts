@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import {
   ListCommand,
   RegisterCommand,
@@ -17,5 +25,10 @@ export class RewardRequestController {
   @Get()
   async list(@Query() listCommand: ListCommand) {
     return this.rewardRequestService.list(listCommand);
+  }
+
+  @Patch(':id/approve')
+  async approve(@Param('id') id: string) {
+    return this.rewardRequestService.approve({ id });
   }
 }

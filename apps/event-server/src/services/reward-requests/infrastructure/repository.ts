@@ -17,4 +17,5 @@ export interface RewardRequestRepository {
     options?: { limit: number; page: number },
   ): Promise<RewardRequest[]>;
   count(conditions: FindCondition): Promise<number>;
+  findOneOrFail(id: string): Promise<RewardRequest>;
 }

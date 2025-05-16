@@ -1,3 +1,4 @@
+import { badRequest } from '@libs/exceptions';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { v7 } from 'uuid';
@@ -70,6 +71,12 @@ export class RewardRequest {
   }
 
   approve() {
+    if (this.status !== RewardRequestStatus.REQUESTED) {
+      throw badRequest(`Reward request(${this.id}) is not requested`, {
+        errorMessage: '이미 완료된 리워드 요청을 승인할 수 없습니다.',
+      });
+    }
+
     this.status = RewardRequestStatus.APPROVED;
     this.transitAt = new Date();
   }

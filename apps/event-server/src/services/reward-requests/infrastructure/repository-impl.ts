@@ -3,7 +3,7 @@ import { FindCondition, RewardRequestRepository } from './repository';
 import { RewardRequest } from '../domain/model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { conflict, internalServerError } from '@libs/exceptions';
+import { conflict, internalServerError, notFound } from '@libs/exceptions';
 import { Repository } from '@libs/ddd/repository';
 
 @Injectable()
@@ -20,7 +20,14 @@ export class RewardRequestRepositoryImpl
 
   async save(rewards: RewardRequest[]): Promise<void> {
     try {
-      await this.rewardRequestModel.insertMany(rewards);
+      const operations = rewards.map((reward) => ({
+        updateOne: {
+          filter: { id: reward.id },
+          update: { $set: reward },
+          upsert: true,
+        },
+      }));
+      await this.rewardRequestModel.bulkWrite(operations);
     } catch (e) {
       if (e.message.includes('duplicate key error')) {
         throw conflict('Reward request already exists', {
@@ -58,5 +65,16 @@ export class RewardRequestRepositoryImpl
         ...this.strip(conditions),
       })
       .exec();
+  }
+
+  async findOneOrFail(id: string): Promise<RewardRequest> {
+    const rewardRequest = await this.rewardRequestModel.findOne({ id });
+    if (!rewardRequest) {
+      throw notFound('Reward request not found', {
+        errorMessage: '리워드 요청을 찾을 수 없습니다.',
+      });
+    }
+
+    return new RewardRequest(rewardRequest);
   }
 }
