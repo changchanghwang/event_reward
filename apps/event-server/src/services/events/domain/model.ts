@@ -42,6 +42,7 @@ export class Event {
     startAt?: Date;
     endAt?: Date;
     status: EventStatus;
+    transitAt?: Date;
   }) {
     if (args) {
       this.id = args.id;
@@ -49,6 +50,7 @@ export class Event {
       this.startAt = args.startAt;
       this.endAt = args.endAt;
       this.status = args.status;
+      this.transitAt = args.transitAt;
     }
   }
 
