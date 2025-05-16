@@ -111,6 +111,13 @@ export class Event {
     this.status = EventStatus.CANCELLED;
     this.transitAt = new Date();
   }
+
+  get canRewardEligible(): boolean {
+    return (
+      this.status === EventStatus.COMPLETED ||
+      this.status === EventStatus.CANCELLED
+    );
+  }
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

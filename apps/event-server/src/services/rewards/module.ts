@@ -16,5 +16,6 @@ import { EventsModule } from '@services/events/module';
     },
     RegisterRewardValidator,
   ],
+  exports: ['RewardRepository'],
 })
 export class RewardsModule {}

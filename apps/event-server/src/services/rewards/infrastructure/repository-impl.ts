@@ -3,7 +3,7 @@ import { FindCondition, RewardRepository } from './repository';
 import { Reward } from '../domain/model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { conflict, internalServerError } from '@libs/exceptions';
+import { conflict, internalServerError, notFound } from '@libs/exceptions';
 import { Repository } from '@libs/ddd/repository';
 
 @Injectable()
@@ -59,5 +59,15 @@ export class RewardRepositoryImpl
         ...this.strip({ eventId }),
       })
       .exec();
+  }
+
+  async findOneOrFail(id: Reward['id']): Promise<Reward> {
+    const reward = await this.rewardModel.findOne({ id });
+    if (!reward) {
+      throw notFound('Reward not found', {
+        errorMessage: '리워드를 찾을 수 없습니다.',
+      });
+    }
+    return new Reward(reward);
   }
 }
