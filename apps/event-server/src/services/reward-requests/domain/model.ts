@@ -57,10 +57,11 @@ export class RewardRequest {
     userId: string;
     eventId: string;
     rewardId: string;
+    status: RewardRequestStatus;
   }): RewardRequest {
     return new RewardRequest({
       id: v7(),
-      status: RewardRequestStatus.REQUESTED,
+      status: args.status,
       requestedAt: new Date(),
       userId: args.userId,
       eventId: args.eventId,

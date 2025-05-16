@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { RegisterCommand } from '../commands';
-import { RewardRequest } from '../domain/model';
-import { RewardRequestRepository } from '../infrastructure/repository';
 import { RewardRepository } from '@services/rewards/infrastructure/repository';
 import { EventRepository } from '@services/events/infrastructure/repository';
-import { badRequest } from '@libs/exceptions';
+import { RegisterCommand } from '../commands';
+import { RewardRequest } from '../domain/model';
+import { RewardRequestValidator } from '../domain/services';
+import { RewardRequestRepository } from '../infrastructure/repository';
 
 @Injectable()
 export class RewardRequestService {
@@ -15,6 +15,7 @@ export class RewardRequestService {
     private readonly eventRepository: EventRepository,
     @Inject('RewardRepository')
     private readonly rewardRepository: RewardRepository,
+    private readonly rewardRequestValidator: RewardRequestValidator,
   ) {}
 
   async register(registerCommand: RegisterCommand): Promise<RewardRequest> {
@@ -23,32 +24,17 @@ export class RewardRequestService {
       this.rewardRepository.findOneOrFail(registerCommand.rewardId),
     ]);
 
-    // <<- TODO: move validation logic to domain service
-    if (!event.canRewardEligible) {
-      throw badRequest(`Event(${event.id}) is not eligible for reward.`, {
-        errorMessage: '진행된 이벤트가 아닙니다.',
-      });
-    }
-
-    const [existRewardRequest] = await this.rewardRequestRepository.find({
+    const rewardRequestStatus = await this.rewardRequestValidator.validate({
       userId: registerCommand.userId,
-      eventId: event.id,
-      rewardId: reward.id,
+      event,
+      reward,
     });
-
-    if (!!existRewardRequest) {
-      throw badRequest(`Reward request already exists.`, {
-        errorMessage: '이미 리워드 요청이 존재합니다.',
-      });
-    }
-    //TODO: manual reward가 아니라면 조건 충족 확인
-
-    // ->>
 
     const rewardRequest = RewardRequest.from({
       userId: registerCommand.userId,
       eventId: event.id,
       rewardId: reward.id,
+      status: rewardRequestStatus,
     });
 
     await this.rewardRequestRepository.save([rewardRequest]);
