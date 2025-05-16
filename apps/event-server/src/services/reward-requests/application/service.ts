@@ -1,7 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { RewardRepository } from '@services/rewards/infrastructure/repository';
 import { EventRepository } from '@services/events/infrastructure/repository';
-import { ApproveCommand, ListCommand, RegisterCommand } from '../commands';
+import {
+  ApproveCommand,
+  ListCommand,
+  RegisterCommand,
+  RejectCommand,
+} from '../commands';
 import { RewardRequest } from '../domain/model';
 import { RewardRequestValidator } from '../domain/services';
 import { RewardRequestRepository } from '../infrastructure/repository';
@@ -69,6 +74,18 @@ export class RewardRequestService {
     );
 
     rewardRequest.approve();
+
+    await this.rewardRequestRepository.save([rewardRequest]);
+
+    return rewardRequest;
+  }
+
+  async reject(rejectCommand: RejectCommand): Promise<RewardRequest> {
+    const rewardRequest = await this.rewardRequestRepository.findOneOrFail(
+      rejectCommand.id,
+    );
+
+    rewardRequest.reject();
 
     await this.rewardRequestRepository.save([rewardRequest]);
 

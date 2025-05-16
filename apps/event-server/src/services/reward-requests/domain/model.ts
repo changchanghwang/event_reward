@@ -72,12 +72,29 @@ export class RewardRequest {
 
   approve() {
     if (this.status !== RewardRequestStatus.REQUESTED) {
-      throw badRequest(`Reward request(${this.id}) is not requested`, {
-        errorMessage: '이미 완료된 리워드 요청을 승인할 수 없습니다.',
-      });
+      throw badRequest(
+        `Can not approve Reward request(${this.id}). It is not requested`,
+        {
+          errorMessage: '이미 완료된 리워드 요청을 승인할 수 없습니다.',
+        },
+      );
     }
 
     this.status = RewardRequestStatus.APPROVED;
+    this.transitAt = new Date();
+  }
+
+  reject() {
+    if (this.status !== RewardRequestStatus.REQUESTED) {
+      throw badRequest(
+        `Can not reject Reward request(${this.id}). It is not requested`,
+        {
+          errorMessage: '이미 완료된 리워드 요청을 거절할 수 없습니다.',
+        },
+      );
+    }
+
+    this.status = RewardRequestStatus.REJECTED;
     this.transitAt = new Date();
   }
 }
