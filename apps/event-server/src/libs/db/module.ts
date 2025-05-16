@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { EventSchema } from '@services/events/domain/model';
+import { EventSchema, Event } from '@services/events/domain/model';
+import { RewardSchema, Reward } from '@services/rewards/domain/model';
 
 @Module({
   imports: [
@@ -26,6 +27,10 @@ import { EventSchema } from '@services/events/domain/model';
       {
         name: Event.name,
         schema: EventSchema,
+      },
+      {
+        name: Reward.name,
+        schema: RewardSchema,
       },
     ]),
   ],

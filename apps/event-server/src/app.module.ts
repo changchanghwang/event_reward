@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { HealthModule } from '@libs/health';
 import { DatabaseModule } from '@libs/db';
 import { EventsModule } from '@services/events/modeul';
+import { RewardsModule } from '@services/rewards/module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -12,6 +13,7 @@ import { EventsModule } from '@services/events/modeul';
     DatabaseModule,
     HealthModule,
     EventsModule,
+    RewardsModule,
   ],
   controllers: [],
   providers: [],

@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ListCommand } from '@services/events/commands/list';
-import { RegisterCommand } from '@services/events/commands/register';
+import { ListCommand, RegisterCommand } from '@services/events/commands';
 import { Event } from '@services/events/domain/model';
 import { EventRepository } from '@services/events/infrastructure/repository';
 
