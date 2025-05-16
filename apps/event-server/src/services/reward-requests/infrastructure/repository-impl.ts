@@ -38,10 +38,8 @@ export class RewardRequestRepositoryImpl
     conditions: FindCondition,
     options?: { limit: number; page: number },
   ): Promise<RewardRequest[]> {
-    const { eventId } = conditions;
-
     const rewardRequests = this.rewardRequestModel.find({
-      ...this.strip({ eventId }),
+      ...this.strip(conditions),
     });
 
     if (options) {
@@ -52,5 +50,13 @@ export class RewardRequestRepositoryImpl
     return (await rewardRequests.exec()).map(
       (rewardRequest) => new RewardRequest(rewardRequest),
     );
+  }
+
+  async count(conditions: FindCondition): Promise<number> {
+    return this.rewardRequestModel
+      .countDocuments({
+        ...this.strip(conditions),
+      })
+      .exec();
   }
 }

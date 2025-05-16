@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { RewardRepository } from '@services/rewards/infrastructure/repository';
 import { EventRepository } from '@services/events/infrastructure/repository';
-import { RegisterCommand } from '../commands';
+import { ListCommand, RegisterCommand } from '../commands';
 import { RewardRequest } from '../domain/model';
 import { RewardRequestValidator } from '../domain/services';
 import { RewardRequestRepository } from '../infrastructure/repository';
@@ -40,5 +40,26 @@ export class RewardRequestService {
     await this.rewardRequestRepository.save([rewardRequest]);
 
     return rewardRequest;
+  }
+
+  async list(listCommand: ListCommand): Promise<Paginated<RewardRequest>> {
+    const { userId, eventId, status, page, limit } = listCommand;
+
+    const [rewardRequests, count] = await Promise.all([
+      this.rewardRequestRepository.find(
+        { userId, eventId, status },
+        { limit, page },
+      ),
+      this.rewardRequestRepository.count({
+        userId,
+        eventId,
+        status,
+      }),
+    ]);
+
+    return {
+      items: rewardRequests,
+      count,
+    };
   }
 }
