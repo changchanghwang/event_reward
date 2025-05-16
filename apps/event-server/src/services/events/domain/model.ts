@@ -41,13 +41,14 @@ export class Event {
     type: EventType;
     startAt?: Date;
     endAt?: Date;
+    status: EventStatus;
   }) {
     if (args) {
       this.id = args.id;
       this.type = args.type;
       this.startAt = args.startAt;
       this.endAt = args.endAt;
-      this.status = EventStatus.SCHEDULED;
+      this.status = args.status;
     }
   }
 
@@ -69,6 +70,7 @@ export class Event {
       type: args.type,
       startAt: args.startAt,
       endAt: args.endAt,
+      status: EventStatus.SCHEDULED,
     });
   }
 

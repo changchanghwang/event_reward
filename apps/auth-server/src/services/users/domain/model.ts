@@ -37,13 +37,14 @@ export class User {
     username: string;
     email: string;
     password: string;
+    role: Role;
   }) {
     if (args) {
       this.id = args.id;
       this.username = args.username;
       this.email = args.email;
       this.password = args.password;
-      this.role = Role.USER; // 초기값은 USER
+      this.role = args.role;
     }
   }
 
@@ -61,7 +62,13 @@ export class User {
     const id = v7();
     const hashedPassword = await passwordHashService.hash(password);
 
-    return new User({ id, username, email, password: hashedPassword });
+    return new User({
+      id,
+      username,
+      email,
+      password: hashedPassword,
+      role: Role.USER, // 초기값은 USER
+    });
   }
 
   async validatePassword(
