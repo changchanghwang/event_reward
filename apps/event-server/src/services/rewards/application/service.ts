@@ -18,6 +18,8 @@ export class RewardService {
       amount: registerCommand.amount,
       eventId: registerCommand.eventId,
       referenceId: registerCommand.referenceId,
+      isManual: registerCommand.isManual,
+      required: registerCommand.required,
       registerValidator: this.registerRewardValidator,
     });
 

@@ -28,12 +28,20 @@ export class Reward {
   @Prop({ required: false })
   referenceId?: string; // item의 경우 itemId, coupon의 경우 couponId
 
+  @Prop({ required: true })
+  isManual: boolean;
+
+  @Prop({ required: true })
+  required: number;
+
   constructor(args: {
     id: string;
     type: RewardType;
     amount: number;
     eventId: string;
     referenceId?: string;
+    isManual: boolean;
+    required: number;
   }) {
     if (args) {
       this.id = args.id;
@@ -41,6 +49,8 @@ export class Reward {
       this.amount = args.amount;
       this.eventId = args.eventId;
       this.referenceId = args.referenceId;
+      this.isManual = args.isManual;
+      this.required = args.required;
     }
   }
 
@@ -49,6 +59,8 @@ export class Reward {
     amount: number;
     eventId: string;
     referenceId?: string;
+    isManual: boolean;
+    required: number;
     registerValidator: RegisterRewardValidator;
   }): Promise<Reward> {
     await args.registerValidator.validate(args.eventId);
@@ -59,6 +71,8 @@ export class Reward {
       amount: args.amount,
       eventId: args.eventId,
       referenceId: args.referenceId,
+      isManual: args.isManual,
+      required: args.required,
     });
   }
 }
