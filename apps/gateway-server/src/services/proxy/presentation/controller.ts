@@ -6,6 +6,8 @@ import {
   HttpException,
   Patch,
   UseGuards,
+  All,
+  Get,
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { Request, Response } from 'express';
@@ -75,5 +77,57 @@ export class ProxyController {
   @UseGuards(JwtAuthGuard)
   async proxyPrivateUserRoutes(@Req() req: Request, @Res() res: Response) {
     return await this.proxyRequest(this.authServerUrl, req, res);
+  }
+
+  @All(['/events', '/events/*'])
+  @Roles(Role.OPERATOR)
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
+  async proxyPrivateEventRoutes(@Req() req: Request, @Res() res: Response) {
+    return await this.proxyRequest(this.eventServerUrl, req, res);
+  }
+
+  @Post('/rewards')
+  @Roles(Role.OPERATOR)
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
+  async proxyPrivateRewardRegisterRoutes(
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    return await this.proxyRequest(this.eventServerUrl, req, res);
+  }
+
+  @Get('/rewards')
+  @Roles(Role.OPERATOR, Role.AUDITOR)
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
+  async proxyPrivateRewardListRoutes(
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    return await this.proxyRequest(this.eventServerUrl, req, res);
+  }
+
+  @Post('/reward-requests')
+  @Roles(Role.USER)
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
+  async proxyPrivateRewardRequestRegisterRoutes(
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    return await this.proxyRequest(this.eventServerUrl, req, res);
+  }
+
+  @Post(['/reward-requests/:id/approve', '/reward-requests/:id/reject'])
+  @Roles(Role.OPERATOR)
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
+  async proxyPrivateRewardRequestApproveRoutes(
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    return await this.proxyRequest(this.eventServerUrl, req, res);
   }
 }

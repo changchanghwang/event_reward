@@ -1,7 +1,7 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { SetMetadata } from '@nestjs/common';
-import { forbidden } from '@libs/exceptions';
+import { forbidden, internalServerError } from '@libs/exceptions';
 
 const ROLES_KEY = 'roles';
 export const Roles = (...roles: Role[]) => SetMetadata(ROLES_KEY, roles);
@@ -23,16 +23,16 @@ export class RolesGuard implements CanActivate {
       context.getClass(),
     ]);
 
-    if (!requiredRoles) {
-      return true;
-    }
-
     const { user } = context.switchToHttp().getRequest();
 
     if (!user) {
       throw forbidden('User not found', {
         errorMessage: '권한이 없습니다.',
       });
+    }
+
+    if (user.role === Role.ADMIN) {
+      return true;
     }
 
     if (!user.role) {
