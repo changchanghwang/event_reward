@@ -64,6 +64,23 @@ services:
       - ./apps/event-server/tsconfig.json:/apps/event-server/tsconfig.json
     depends_on:
       - event-db
+  gateway-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.gateway.dev
+    environment:
+      - PORT=4042
+      - EVENT_SERVER_URL=http://event-server:4041
+      - AUTH_SERVER_URL=http://auth-server:4040
+    ports:
+      - 4042:4042
+    restart: always
+    volumes:
+      - ./apps/gateway-server/src/:/apps/gateway-server/src/
+      - ./apps/gateway-server/tsconfig.json:/apps/gateway-server/tsconfig.json
+    depends_on:
+      - event-server
+      - auth-server
 
 volumes:
   auth_mongo_data:

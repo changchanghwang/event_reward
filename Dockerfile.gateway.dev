@@ -1,0 +1,11 @@
+FROM node:18-alpine
+
+WORKDIR /apps/gateway-server
+COPY ./apps/gateway-server/package*.json ./
+RUN npm ci
+
+COPY ./apps/gateway-server/ ./
+
+EXPOSE $PORT
+
+CMD ["npm", "run", "start:dev"]
