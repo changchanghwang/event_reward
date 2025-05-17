@@ -28,7 +28,7 @@ export class UserController {
     return this.usersService.login(loginCommand);
   }
 
-  @Patch('/:id/role')
+  @Patch('/:id/roles')
   @HttpCode(200)
   async changeRole(
     @Param('id') id: string,

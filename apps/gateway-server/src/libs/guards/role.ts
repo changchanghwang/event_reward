@@ -1,6 +1,7 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { SetMetadata } from '@nestjs/common';
+import { forbidden } from '@libs/exceptions';
 
 const ROLES_KEY = 'roles';
 export const Roles = (...roles: Role[]) => SetMetadata(ROLES_KEY, roles);
@@ -28,10 +29,29 @@ export class RolesGuard implements CanActivate {
 
     const { user } = context.switchToHttp().getRequest();
 
-    if (!user || !user.role) {
-      return false;
+    if (!user) {
+      throw forbidden('User not found', {
+        errorMessage: '권한이 없습니다.',
+      });
     }
 
-    return requiredRoles.some((role) => user.roles?.includes(role));
+    if (!user.role) {
+      throw forbidden('User role not found', {
+        errorMessage: '권한이 없습니다.',
+      });
+    }
+
+    if (requiredRoles.some((role) => user.role === role)) {
+      return true;
+    }
+
+    throw forbidden(
+      `User role(${
+        user.role
+      }) is not allowed to access this resource(${requiredRoles.join(', ')})`,
+      {
+        errorMessage: '권한이 없습니다.',
+      },
+    );
   }
 }

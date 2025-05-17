@@ -14,7 +14,14 @@ export class UserRepositoryImpl implements UserRepository {
 
   async save(users: User[]): Promise<void> {
     try {
-      await this.userModel.insertMany(users);
+      const operations = users.map((user) => ({
+        updateOne: {
+          filter: { id: user.id },
+          update: { $set: user },
+          upsert: true,
+        },
+      }));
+      await this.userModel.bulkWrite(operations);
     } catch (e) {
       if (e.message.includes('duplicate key error')) {
         throw conflict('User already exists', {
@@ -34,7 +41,7 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async findOneOrFail(id: string): Promise<User> {
-    const user = await this.userModel.findById(id);
+    const user = await this.userModel.findOne({ id });
     if (!user) {
       throw notFound('User not found.', {
         errorMessage: '존재하지 않는 사용자입니다.',

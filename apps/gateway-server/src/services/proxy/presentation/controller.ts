@@ -1,10 +1,18 @@
-import { Controller, Req, Res, Post, HttpException } from '@nestjs/common';
+import {
+  Controller,
+  Req,
+  Res,
+  Post,
+  HttpException,
+  Patch,
+  UseGuards,
+} from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
 import type { AxiosRequestConfig } from 'axios';
-import { Public } from '@libs/guards';
+import { JwtAuthGuard, Public, Role, Roles, RolesGuard } from '@libs/guards';
 import { JwtPayload } from '@libs/jwt';
 
 @Controller()
@@ -57,7 +65,15 @@ export class ProxyController {
 
   @Public()
   @Post(['/users/login', '/users'])
-  async proxyUserPublicRoutes(@Req() req: Request, @Res() res: Response) {
+  async proxyPublicUserRoutes(@Req() req: Request, @Res() res: Response) {
+    return await this.proxyRequest(this.authServerUrl, req, res);
+  }
+
+  @Patch('/users/:id/roles')
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
+  async proxyPrivateUserRoutes(@Req() req: Request, @Res() res: Response) {
     return await this.proxyRequest(this.authServerUrl, req, res);
   }
 }
