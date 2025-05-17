@@ -1,4 +1,4 @@
-import { Controller, Req, Res, Post } from '@nestjs/common';
+import { Controller, Req, Res, Post, HttpException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
@@ -51,13 +51,13 @@ export class ProxyController {
       );
       res.status(response.status).set(response.headers).send(response.data);
     } catch (error) {
-      console.error(error);
+      throw new HttpException(error.response.data, error.response.status);
     }
   }
 
   @Public()
-  @Post('/users/login')
-  async login(@Req() req: Request, @Res() res: Response) {
+  @Post(['/users/login', '/users'])
+  async proxyUserPublicRoutes(@Req() req: Request, @Res() res: Response) {
     return await this.proxyRequest(this.authServerUrl, req, res);
   }
 }
