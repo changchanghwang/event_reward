@@ -1,6 +1,7 @@
 import { HealthModule } from '@libs/health';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ProxyModule } from '@services/proxy/module';
 
 @Module({
   imports: [
@@ -9,6 +10,7 @@ import { ConfigModule } from '@nestjs/config';
       envFilePath: '.env',
     }),
     HealthModule,
+    ProxyModule,
   ],
   controllers: [],
   providers: [],

@@ -23,6 +23,7 @@ services:
       - DATABASE_PASSWORD=1234
       - DATABASE_NAME=auth
       - JWT_SECRET=thisistestjwtsecretfordevelopmentenvironment
+      - GATEWAY_SERVER_URL=http://gateway-server:4042
     ports:
       - 4040:4040
     restart: always
@@ -55,7 +56,6 @@ services:
       - DATABASE_USER=root
       - DATABASE_PASSWORD=1234
       - DATABASE_NAME=event
-      - JWT_SECRET=thisistestjwtsecretfordevelopmentenvironment
     ports:
       - 4041:4041
     restart: always
@@ -72,6 +72,7 @@ services:
       - PORT=4042
       - EVENT_SERVER_URL=http://event-server:4041
       - AUTH_SERVER_URL=http://auth-server:4040
+      - JWT_SECRET=thisistestjwtsecretfordevelopmentenvironment
     ports:
       - 4042:4042
     restart: always
