@@ -4,6 +4,7 @@ import { UsersModule } from '@services/users/module';
 import { HealthModule } from '@libs/health';
 import { DatabaseModule } from '@libs/db';
 import { RequestIdModule } from '@libs/request';
+import { KafkaClientModule } from '@libs/kafka';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { RequestIdModule } from '@libs/request';
     UsersModule,
     HealthModule,
     RequestIdModule,
+    KafkaClientModule,
   ],
   controllers: [],
   providers: [],

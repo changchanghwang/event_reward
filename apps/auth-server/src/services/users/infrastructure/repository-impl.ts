@@ -6,6 +6,7 @@ import { Model } from 'mongoose';
 import { User as UserEntity } from '../domain/model'; // UserDocument 또는 적절한 Mongoose 스키마/모델 클래스로 변경해야 합니다.
 import { conflict, internalServerError, notFound } from '@libs/exceptions';
 import { DddEvent } from '@libs/ddd/event';
+import { ClientKafka } from '@nestjs/microservices';
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {
@@ -13,6 +14,7 @@ export class UserRepositoryImpl implements UserRepository {
     @InjectModel(UserEntity.name) private readonly userModel: Model<UserEntity>,
     @InjectModel(DddEvent.name) private readonly eventModel: Model<DddEvent>,
     @Inject('REQUEST_ID') private readonly requestId: string,
+    @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka,
   ) {}
 
   async save(users: User[]): Promise<void> {
@@ -46,7 +48,10 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async saveEvents(events: DddEvent[]): Promise<void> {
-    Promise.all(events.map((event) => this.eventModel.create(event)));
+    await Promise.all(events.map((event) => this.eventModel.create(event)));
+    events.forEach((event) => {
+      this.kafkaClient.emit('auth-server-ddd-event', event);
+    });
   }
 
   async findOneByEmail(email: string): Promise<User | null> {

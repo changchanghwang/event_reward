@@ -5,11 +5,9 @@ import { UsersService } from './application';
 import { PasswordHashService } from './domain/services';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { DatabaseModule } from '@libs/db/module';
 
 @Module({
   imports: [
-    DatabaseModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({

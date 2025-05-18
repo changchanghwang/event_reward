@@ -64,7 +64,10 @@ export class ProxyController {
       );
       res.status(response.status).set(response.headers).send(response.data);
     } catch (error) {
-      throw new HttpException(error.response.data, error.response.status);
+      throw new HttpException(
+        error.response?.data ?? error.message,
+        error.response?.status || 500,
+      );
     }
   }
 
