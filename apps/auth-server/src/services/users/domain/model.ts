@@ -6,6 +6,8 @@ import type { PasswordHashService } from './services';
 import { unauthorized } from '@libs/exceptions';
 import { AggregateRoot } from '@libs/ddd/aggregate';
 import { UserRegisteredEvent } from '@services/users/domain/events';
+import type { JwtService } from '@nestjs/jwt';
+import { UserLoggedInEvent } from '@services/users/domain/events/user-logged-in-event';
 
 export type UserDocument = User & Document;
 
@@ -92,6 +94,17 @@ export class User extends AggregateRoot {
 
   changeRole(role: Role) {
     this.role = role;
+  }
+
+  login(jwtService: JwtService) {
+    const accessToken = jwtService.sign({
+      id: this.id,
+      role: this.role,
+    });
+
+    this.publishEvent(new UserLoggedInEvent(this.id, this.role));
+
+    return { accessToken };
   }
 }
 

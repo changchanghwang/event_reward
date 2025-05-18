@@ -40,12 +40,7 @@ export class UsersService {
       this.passwordHashService,
     );
 
-    const accessToken = this.jwtService.sign({
-      id: user.id,
-      role: user.role,
-    });
-
-    return { accessToken };
+    return user.login(this.jwtService);
   }
 
   async changeRole(userId: string, changeRoleCommand: ChangeRoleCommand) {
