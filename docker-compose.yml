@@ -24,6 +24,7 @@ services:
       - DATABASE_NAME=auth
       - JWT_SECRET=thisistestjwtsecretfordevelopmentenvironment
       - GATEWAY_SERVER_URL=http://gateway-server:4042
+      - KAFKA_BROKER_URL=kafka:29092
     ports:
       - 4040:4040
     restart: always
@@ -41,6 +42,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=1234
       - MONGO_INITDB_DATABASE=event
+      - KAFKA_BROKER_URL=kafka:29092
     volumes:
       - event_mongo_data:/data/db
       - ./scripts/event-db-init.js:/docker-entrypoint-initdb.d/event-db-init.js
@@ -83,7 +85,67 @@ services:
     depends_on:
       - event-server
       - auth-server
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: kafka
+    ports:
+      - "9092:9092"
+      - "9101:9101"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:29093"
+      KAFKA_LISTENERS: "PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      CLUSTER_ID: "MkU3OEVBNTcwNTJENDM2Qk"
+      # KAFKA_CREATE_TOPICS: "auth-server-ddd-event:1:1"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD", "cub", "kafka-ready", "-b", "kafka:29092", "1", "5"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  kafka-init:
+    image: confluentinc/cp-kafka:7.6.1
+    depends_on:
+      kafka:
+        condition: service_healthy
+    entrypoint: /bin/sh
+    command: >
+      -c "
+        echo 'Waiting for Kafka to be ready...'
+        cub kafka-ready -b kafka:29092 1 60 && \
+        echo 'Kafka is ready. Creating topics...' && \
+        kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic auth-server-ddd-event --partitions 1 --replication-factor 1 && \
+        echo 'Topic creation command executed.'
+      "
+    restart: on-failure
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    depends_on:
+      - kafka
+      - kafka-init
+    ports:
+      - "28989:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
 
 volumes:
   auth_mongo_data:
   event_mongo_data:
+  kafka_data: {}
