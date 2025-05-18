@@ -4,6 +4,8 @@ import { v7 } from 'uuid';
 import { Exclude } from 'class-transformer';
 import type { PasswordHashService } from './services';
 import { unauthorized } from '@libs/exceptions';
+import { AggregateRoot } from '@libs/ddd/aggregate';
+import { UserRegisteredEvent } from '@services/users/domain/events';
 
 export type UserDocument = User & Document;
 
@@ -15,7 +17,7 @@ export enum Role {
 }
 
 @Schema({ timestamps: true })
-export class User {
+export class User extends AggregateRoot {
   @Prop({ required: true, unique: true, trim: true })
   id: string;
 
@@ -39,12 +41,17 @@ export class User {
     password: string;
     role: Role;
   }) {
+    super();
     if (args) {
       this.id = args.id;
       this.username = args.username;
       this.email = args.email;
       this.password = args.password;
       this.role = args.role;
+
+      this.publishEvent(
+        new UserRegisteredEvent(this.id, this.username, this.email, this.role),
+      );
     }
   }
 

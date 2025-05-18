@@ -8,6 +8,7 @@ import {
   UseGuards,
   All,
   Get,
+  Inject,
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { Request, Response } from 'express';
@@ -25,6 +26,7 @@ export class ProxyController {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
+    @Inject('REQUEST_ID') private readonly requestId: string,
   ) {
     this.authServerUrl = this.configService.get<string>('AUTH_SERVER_URL');
     this.eventServerUrl = this.configService.get<string>('EVENT_SERVER_URL');
@@ -51,6 +53,7 @@ export class ProxyController {
         ...newHeaders,
         'x-user-id': user?.userId,
         'x-user-role': user?.role,
+        'x-request-id': this.requestId,
         host: new URL(serviceUrl).host,
       },
     };

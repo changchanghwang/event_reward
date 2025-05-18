@@ -1,4 +1,5 @@
 import { HealthModule } from '@libs/health';
+import { RequestIdModule } from '@libs/request';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ProxyModule } from '@services/proxy/module';
@@ -11,6 +12,7 @@ import { ProxyModule } from '@services/proxy/module';
     }),
     HealthModule,
     ProxyModule,
+    RequestIdModule,
   ],
   controllers: [],
   providers: [],

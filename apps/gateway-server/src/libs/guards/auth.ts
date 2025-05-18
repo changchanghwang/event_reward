@@ -35,7 +35,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         errorMessage: 'Unauthorized',
       });
     }
-    console.log('!!!', user);
 
     if (!user) {
       throw unauthorized('User not found', {
