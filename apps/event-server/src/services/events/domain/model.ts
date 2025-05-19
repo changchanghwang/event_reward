@@ -115,7 +115,7 @@ export class Event {
   get canRewardEligible(): boolean {
     return (
       this.status === EventStatus.COMPLETED ||
-      this.status === EventStatus.CANCELLED
+      this.status === EventStatus.PROCESSING
     );
   }
 }
