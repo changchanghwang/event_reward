@@ -180,4 +180,36 @@ describe('Event Model test', () => {
       },
     );
   });
+
+  describe('canRewardEligible test', () => {
+    test('event가 완료되었다면 리워드 지급이 가능하다.', () => {
+      const event = eventOf({
+        status: EventStatus.COMPLETED,
+      });
+
+      expect(event.canRewardEligible).toBe(true);
+    });
+
+    test('event가 진행 중이라면 리워드 지급이 가능하다.', () => {
+      const event = eventOf({
+        status: EventStatus.PROCESSING,
+      });
+
+      expect(event.canRewardEligible).toBe(true);
+    });
+
+    test('event가 취소되었다면 리워드 지급이 불가능하다.', () => {
+      const event = eventOf({
+        status: EventStatus.CANCELLED,
+      });
+    });
+
+    test('event가 예정 상태라면 리워드 지급이 불가능하다.', () => {
+      const event = eventOf({
+        status: EventStatus.SCHEDULED,
+      });
+
+      expect(event.canRewardEligible).toBe(false);
+    });
+  });
 });
