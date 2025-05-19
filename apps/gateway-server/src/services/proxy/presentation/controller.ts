@@ -85,11 +85,17 @@ export class ProxyController {
     return await this.proxyRequest(this.authServerUrl, req, res);
   }
 
-  @All(['/events', '/events/*'])
+  @Post(['/events', '/events/*'])
   @Roles(Role.OPERATOR)
   @UseGuards(RolesGuard)
   @UseGuards(JwtAuthGuard)
   async proxyPrivateEventRoutes(@Req() req: Request, @Res() res: Response) {
+    return await this.proxyRequest(this.eventServerUrl, req, res);
+  }
+
+  @Get(['/events', '/events/:id'])
+  @UseGuards(JwtAuthGuard)
+  async proxyPublicEventRoutes(@Req() req: Request, @Res() res: Response) {
     return await this.proxyRequest(this.eventServerUrl, req, res);
   }
 
