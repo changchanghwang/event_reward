@@ -1,10 +1,16 @@
+// nest schedule의 경우 내부적으로 crypto를 사용하고 있는데
+// Node 18의 경우 crypto 모듈이 없어서 추가해줘야 함
+// <--
+import { webcrypto } from 'node:crypto';
+(global as any).crypto = webcrypto;
+// --> node version을 업그레이드 하면 필요없어진다.
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from '@libs/exceptions';
 import { Transport, MicroserviceOptions } from '@nestjs/microservices';
-import { logLevel } from 'kafkajs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

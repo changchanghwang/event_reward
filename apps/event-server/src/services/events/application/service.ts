@@ -49,7 +49,7 @@ export class EventService {
     return event;
   }
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async autoStart() {
     const events = await this.eventRepository.find({
       status: EventStatus.SCHEDULED,
@@ -57,6 +57,10 @@ export class EventService {
         to: new Date(),
       },
     });
+
+    if (!events.length) {
+      return;
+    }
 
     for (const event of events) {
       event.start();

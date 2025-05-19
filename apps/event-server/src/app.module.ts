@@ -8,12 +8,15 @@ import { RewardRequestsModule } from '@services/reward-requests/module';
 import { ActivitiesModule } from '@services/activities/module';
 import { KafkaClientModule } from '@libs/kafka';
 import { RequestIdModule } from '@libs/request';
+import { ScheduleModule } from '@nestjs/schedule';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
     }),
+    ScheduleModule.forRoot(),
     DatabaseModule,
     HealthModule,
     EventsModule,

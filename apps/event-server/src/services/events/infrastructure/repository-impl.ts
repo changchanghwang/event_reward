@@ -49,8 +49,8 @@ export class EventRepositoryImpl extends Repository implements EventRepository {
       ...this.strip({
         type,
         status,
-        startAt: this.range(startAtPeriod.from, startAtPeriod.to),
-        endAt: this.range(endAtPeriod.from, endAtPeriod.to),
+        startAt: this.range(startAtPeriod?.from, startAtPeriod?.to),
+        endAt: this.range(endAtPeriod?.from, endAtPeriod?.to),
       }),
     });
 
