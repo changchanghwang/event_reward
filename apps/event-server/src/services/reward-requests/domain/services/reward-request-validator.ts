@@ -33,7 +33,6 @@ export class RewardRequestValidator {
     const [existRewardRequest] = await this.rewardRequestRepository.find({
       userId: userId,
       eventId: event.id,
-      rewardId: reward.id,
     });
 
     if (!!existRewardRequest) {
