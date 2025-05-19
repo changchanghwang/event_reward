@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { ListCommand, RegisterCommand } from '@services/events/commands';
-import { Event } from '@services/events/domain/model';
+import { Event, EventStatus } from '@services/events/domain/model';
 import { EventRepository } from '@services/events/infrastructure/repository';
 
 @Injectable()
@@ -46,5 +47,20 @@ export class EventService {
     event.start();
     await this.eventRepository.save([event]);
     return event;
+  }
+
+  @Cron(CronExpression.EVERY_30_MINUTES)
+  async autoStart() {
+    const events = await this.eventRepository.find({
+      status: EventStatus.SCHEDULED,
+      startAtPeriod: {
+        to: new Date(),
+      },
+    });
+
+    for (const event of events) {
+      event.start();
+    }
+    await this.eventRepository.save(events);
   }
 }
