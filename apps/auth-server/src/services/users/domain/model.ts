@@ -36,6 +36,9 @@ export class User extends AggregateRoot {
   @Prop({ required: true })
   role: Role;
 
+  @Prop()
+  lastLoggedInAt?: Date;
+
   constructor(args: {
     id: string;
     username: string;
@@ -50,10 +53,6 @@ export class User extends AggregateRoot {
       this.email = args.email;
       this.password = args.password;
       this.role = args.role;
-
-      this.publishEvent(
-        new UserRegisteredEvent(this.id, this.username, this.email, this.role),
-      );
     }
   }
 
@@ -71,13 +70,17 @@ export class User extends AggregateRoot {
     const id = v7();
     const hashedPassword = await passwordHashService.hash(password);
 
-    return new User({
+    const user = new User({
       id,
       username,
       email,
       password: hashedPassword,
       role: Role.USER, // 초기값은 USER
     });
+
+    user.publishEvent(new UserRegisteredEvent(id, username, email, Role.USER));
+
+    return user;
   }
 
   async validatePassword(
@@ -102,9 +105,12 @@ export class User extends AggregateRoot {
       role: this.role,
     });
 
-    this.publishEvent(new UserLoggedInEvent(this.id, this.role));
+    this.lastLoggedInAt = new Date();
+    this.publishEvent(
+      new UserLoggedInEvent(this.id, this.role, this.lastLoggedInAt),
+    );
 
-    return { accessToken };
+    return accessToken;
   }
 }
 

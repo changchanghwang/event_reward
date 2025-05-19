@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from '@libs/exceptions';
+import { Transport, MicroserviceOptions } from '@nestjs/microservices';
+import { logLevel } from 'kafkajs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,8 +20,24 @@ async function bootstrap() {
       }
     },
   });
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        clientId: 'event-server-consumer-v3',
+        brokers: [configService.get<string>('KAFKA_BROKER_URL')],
+        logLevel: logLevel.DEBUG,
+      },
+      consumer: {
+        groupId: 'event-consumer-v3',
+        allowAutoTopicCreation: false,
+      },
+    },
+  });
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  await app.startAllMicroservices();
   await app.listen(port);
 }
 bootstrap();

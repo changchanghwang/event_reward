@@ -50,7 +50,7 @@ export class UserRepositoryImpl implements UserRepository {
   async saveEvents(events: DddEvent[]): Promise<void> {
     await Promise.all(events.map((event) => this.eventModel.create(event)));
     events.forEach((event) => {
-      this.kafkaClient.emit('auth-server-ddd-event', event);
+      this.kafkaClient.emit('auth-server-ddd-event', JSON.stringify(event));
     });
   }
 

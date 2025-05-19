@@ -40,7 +40,11 @@ export class UsersService {
       this.passwordHashService,
     );
 
-    return user.login(this.jwtService);
+    const accessToken = user.login(this.jwtService);
+
+    await this.userRepository.save([user]);
+
+    return { accessToken };
   }
 
   async changeRole(userId: string, changeRoleCommand: ChangeRoleCommand) {

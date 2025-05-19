@@ -2,6 +2,8 @@ import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { EventSchema, Event } from '@services/events/domain/model';
+import { ParticipationSchema } from '@services/participants/domain/model';
+import { Participation } from '@services/participants/domain/model';
 import { RewardRequest } from '@services/reward-requests/domain/model';
 import { RewardRequestSchema } from '@services/reward-requests/domain/model';
 import { RewardSchema, Reward } from '@services/rewards/domain/model';
@@ -38,6 +40,10 @@ import { RewardSchema, Reward } from '@services/rewards/domain/model';
       {
         name: RewardRequest.name,
         schema: RewardRequestSchema,
+      },
+      {
+        name: Participation.name,
+        schema: ParticipationSchema,
       },
     ]),
   ],

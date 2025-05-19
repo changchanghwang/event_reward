@@ -5,6 +5,7 @@ import { DatabaseModule } from '@libs/db';
 import { EventsModule } from '@services/events/module';
 import { RewardsModule } from '@services/rewards/module';
 import { RewardRequestsModule } from '@services/reward-requests/module';
+import { ParticipantsModule } from '@services/participants/module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -16,6 +17,7 @@ import { RewardRequestsModule } from '@services/reward-requests/module';
     EventsModule,
     RewardsModule,
     RewardRequestsModule,
+    ParticipantsModule,
   ],
   controllers: [],
   providers: [],

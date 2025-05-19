@@ -37,6 +37,13 @@ export class DddEvent {
   serialize() {
     const { type: _, occurredAt: __, txId: ___, ...rest } = this;
     this.data = JSON.stringify(rest);
+
+    for (const key in rest) {
+      if (Object.prototype.hasOwnProperty.call(rest, key)) {
+        delete this[key];
+      }
+    }
+
     return this;
   }
 }

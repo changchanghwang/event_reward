@@ -42,7 +42,6 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=1234
       - MONGO_INITDB_DATABASE=event
-      - KAFKA_BROKER_URL=kafka:29092
     volumes:
       - event_mongo_data:/data/db
       - ./scripts/event-db-init.js:/docker-entrypoint-initdb.d/event-db-init.js
@@ -59,6 +58,7 @@ services:
       - DATABASE_PASSWORD=1234
       - DATABASE_NAME=event
       - GATEWAY_SERVER_URL=http://gateway-server:4042
+      - KAFKA_BROKER_URL=kafka:29092
     ports:
       - 4041:4041
     restart: always
