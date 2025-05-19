@@ -63,6 +63,40 @@ docker compose up [실행 할 service 이름(전부 실행할 것이라면 입�
 | 언어      | TypeScript              |
 | 이벤트    | Kafka                   |
 
+## System Architecture
+
+```mermaid
+flowchart TB
+    Client[클라이언트] --> Gateway[API Gateway\n:4042]
+
+    Gateway --> AuthServer[Auth Server\n:4040]
+    Gateway --> EventServer[Event Server\n:4041]
+
+    subgraph Auth[인증 서비스]
+        AuthServer --> AuthDB[(Auth DB\nMongoDB\n:27017)]
+    end
+
+    subgraph Message[메시지 브로커]
+        Kafka[Kafka\n:9092]
+    end
+
+    subgraph Event[이벤트 서비스]
+        EventServer --> EventDB[(Event DB\nMongoDB\n:27018)]
+    end
+
+
+    AuthServer <--> Kafka
+    EventServer <--> Kafka
+
+    style Client fill:#f9f,stroke:#333,stroke-width:2px
+    style Gateway fill:#bbf,stroke:#333,stroke-width:2px
+    style AuthServer fill:#dfd,stroke:#333,stroke-width:2px
+    style EventServer fill:#dfd,stroke:#333,stroke-width:2px
+    style Kafka fill:#ffd,stroke:#333,stroke-width:2px
+    style AuthDB fill:#ff9,stroke:#333,stroke-width:2px
+    style EventDB fill:#ff9,stroke:#333,stroke-width:2px
+```
+
 ## 신경 쓴 부분
 
 전체적으로 개발 생산성에 초점을 맞춰서 개발했습니다.
