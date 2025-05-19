@@ -45,11 +45,11 @@ export class ActivityRepositoryImpl
       await this.saveEvents(dddEvents);
     } catch (e) {
       if (e.message.includes('duplicate key error')) {
-        throw conflict('Reward already exists', {
-          errorMessage: '리워드가 이미 존재합니다.',
+        throw conflict('Activity already exists', {
+          errorMessage: '활동이 이미 존재합니다.',
         });
       }
-      throw internalServerError(`Failed to save reward: ${e.message}`, {
+      throw internalServerError(`Failed to save activity: ${e.message}`, {
         errorMessage:
           '알수 없는 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.',
       });
@@ -105,7 +105,7 @@ export class ActivityRepositoryImpl
     const activity = await this.activityModel.findOne({ id });
     if (!activity) {
       throw notFound('Activity not found', {
-        errorMessage: '리워드를 찾을 수 없습니다.',
+        errorMessage: '활동을 찾을 수 없습니다.',
       });
     }
     return new Activity(activity);

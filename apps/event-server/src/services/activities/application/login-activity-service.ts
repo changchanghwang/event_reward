@@ -44,8 +44,10 @@ export class LoginActivityService {
       ),
     );
 
-    if (!!activities.length) {
-      await this.activityRepository.save(activities);
+    const filteredActivities = activities.filter(Boolean);
+
+    if (!!filteredActivities.length) {
+      await this.activityRepository.save(filteredActivities);
     }
   }
 }

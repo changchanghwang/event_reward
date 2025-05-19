@@ -25,8 +25,9 @@ export function EventHandler<T extends { new (...args: any[]): any }>(
           const eventData = JSON.parse(payload.data);
           const deserializedEvent = Object.assign(new eventClass(), eventData);
 
-          return originalMethod.apply(this, [deserializedEvent]);
+          return await originalMethod.apply(this, [deserializedEvent]);
         } catch (error) {
+          console.error(error);
           throw error;
         }
       }
