@@ -2,6 +2,38 @@
 
 이벤트/보상 관리 플랫폼입니다.
 
+## 목차
+
+- [실행](#실행)
+  - [service 설명](#service-설명)
+- [기술스택](#기술스택)
+- [신경 쓴 부분](#신경-쓴-부분)
+  - [어려웠던 부분](#어려웠던-부분)
+  - [조건 검증 방식](#조건-검증-방식)
+- [Workflow](#workflow)
+  - [Guard](#guard)
+    - [Auth Guard](#auth-guard)
+    - [Role Guard](#role-guard)
+  - [User Context](#user-context)
+    - [User 등록 (public)](#user-등록-public)
+    - [로그인 (public)](#로그인-public)
+    - [user role 변경 (private)](#user-role-변경-private)
+  - [Event Context](#event-context)
+    - [event 등록 (private)](#event-등록-private)
+    - [이벤트 조회 (private)](#이벤트-조회-private)
+    - [이벤트 시작 - 수동 (private)](#이벤트-시작---수동-private)
+    - [이벤트 시작 - 자동](#이벤트-시작---자동)
+  - [Reward Context](#reward-context)
+    - [보상 등록 (private)](#보상-등록-private)
+    - [보상 조회 (private)](#보상-조회-private)
+  - [Reward-Request Context](#reward-request-context)
+    - [보상 요청 등록 (private)](#보상-요청-등록-private)
+    - [보상 요청 조회 (private)](#보상-요청-조회-private)
+    - [보상 요청 승인 (private)](#보상-요청-승인-private)
+    - [보상 요청 거절 (private)](#보상-요청-거절-private)
+  - [Activity Context](#activity-context)
+    - [출석 이벤트 참여 활동 기록](#출석-이벤트-참여-활동-기록)
+
 ## 실행
 
 ```bash
