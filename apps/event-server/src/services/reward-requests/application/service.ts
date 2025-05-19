@@ -7,11 +7,23 @@ import {
   RegisterCommand,
   RejectCommand,
 } from '../commands';
-import { RewardRequest } from '../domain/model';
+import { RewardRequest, type RewardRequestStatus } from '../domain/model';
 import { RewardRequestValidator } from '../domain/services';
 import { RewardRequestRepository } from '../infrastructure/repository';
 import { type User, UserRole } from '@services/external/domain/type';
+import { ActivityRepository } from '@services/activities/infrastructure/repository';
+import { groupBy } from 'lodash';
 
+type RewardRequestOutput = {
+  fulfilled: number;
+  id: string;
+  status: RewardRequestStatus;
+  userId: string;
+  eventId: string;
+  rewardId: string;
+  requestedAt: Date;
+  transitAt?: Date;
+};
 @Injectable()
 export class RewardRequestService {
   constructor(
@@ -22,6 +34,8 @@ export class RewardRequestService {
     @Inject('RewardRepository')
     private readonly rewardRepository: RewardRepository,
     private readonly rewardRequestValidator: RewardRequestValidator,
+    @Inject('ActivityRepository')
+    private readonly activityRepository: ActivityRepository,
   ) {}
 
   async register(registerCommand: RegisterCommand): Promise<RewardRequest> {
@@ -51,7 +65,7 @@ export class RewardRequestService {
   async list(
     listCommand: ListCommand,
     user: User,
-  ): Promise<Paginated<RewardRequest>> {
+  ): Promise<Paginated<RewardRequestOutput>> {
     const { userId, eventId, status, page, limit } = listCommand;
 
     const [rewardRequests, count] = await Promise.all([
@@ -70,8 +84,27 @@ export class RewardRequestService {
       }),
     ]);
 
+    const activities = await this.activityRepository.find({
+      eventIds: rewardRequests.map((rewardRequest) => rewardRequest.eventId),
+      userId: user.role === UserRole.USER ? user.id : userId,
+    });
+
+    const activitiesGroupBy = groupBy(
+      activities,
+      (activity) => `${activity.eventId}-${activity.userId}`,
+    );
+
+    const rewardRequestsWithActivities = rewardRequests.map((rewardRequest) => {
+      const activities =
+        activitiesGroupBy[`${rewardRequest.eventId}-${rewardRequest.userId}`];
+      return {
+        ...rewardRequest,
+        fulfilled: activities?.length ?? 0,
+      };
+    });
+
     return {
-      items: rewardRequests,
+      items: rewardRequestsWithActivities,
       count,
     };
   }
