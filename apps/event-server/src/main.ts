@@ -25,12 +25,11 @@ async function bootstrap() {
     transport: Transport.KAFKA,
     options: {
       client: {
-        clientId: 'event-server-consumer-v3',
+        clientId: 'event-server-consumer',
         brokers: [configService.get<string>('KAFKA_BROKER_URL')],
-        logLevel: logLevel.DEBUG,
       },
       consumer: {
-        groupId: 'event-consumer-v3',
+        groupId: 'event-server-consumer',
         allowAutoTopicCreation: false,
       },
     },

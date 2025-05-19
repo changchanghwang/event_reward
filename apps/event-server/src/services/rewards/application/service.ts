@@ -3,6 +3,7 @@ import { RegisterCommand, ListCommand } from '../commands';
 import { Reward } from '../domain/model';
 import { RewardRepository } from '../infrastructure/repository';
 import { RegisterRewardValidator } from '../domain/services';
+import { ActivityRegisteredEvent } from '@services/activities/domain/events';
 
 @Injectable()
 export class RewardService {
@@ -40,5 +41,9 @@ export class RewardService {
       items: rewards,
       count,
     };
+  }
+
+  async onActivityRegistered(event: ActivityRegisteredEvent) {
+    console.log('!!!', event);
   }
 }

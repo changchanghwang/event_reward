@@ -1,6 +1,5 @@
 import { badRequest } from '@libs/exceptions';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Rate } from '@services/value-object';
 import { Document } from 'mongoose';
 import { v7 } from 'uuid';
 
@@ -37,9 +36,6 @@ export class Event {
   @Prop()
   transitAt?: Date;
 
-  @Prop()
-  max?: Rate;
-
   constructor(args: {
     id: string;
     type: EventType;
@@ -47,7 +43,6 @@ export class Event {
     endAt?: Date;
     status: EventStatus;
     transitAt?: Date;
-    max?: Rate;
   }) {
     if (args) {
       this.id = args.id;
@@ -56,16 +51,10 @@ export class Event {
       this.endAt = args.endAt;
       this.status = args.status;
       this.transitAt = args.transitAt;
-      this.max = args.max;
     }
   }
 
-  static from(args: {
-    type: EventType;
-    startAt?: Date;
-    endAt?: Date;
-    max?: Rate;
-  }): Event {
+  static from(args: { type: EventType; startAt?: Date; endAt?: Date }): Event {
     if (args.startAt?.valueOf() < new Date().valueOf()) {
       throw badRequest('Start time must be in the future', {
         errorMessage: '시작 시간은 현재 시간 이후여야 합니다.',
@@ -84,7 +73,6 @@ export class Event {
       startAt: args.startAt,
       endAt: args.endAt,
       status: EventStatus.SCHEDULED,
-      max: args.max,
     });
   }
 

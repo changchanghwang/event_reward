@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   InternalServerErrorException,
   NotFoundException,
+  NotImplementedException,
   UnauthorizedException,
 } from '@nestjs/common';
 export * from './filter';
@@ -51,6 +52,13 @@ export const unauthorized = (message?: string, option?: ErrorOption) => {
 
 export const internalServerError = (message?: string, option?: ErrorOption) => {
   return new InternalServerErrorException({
+    message,
+    errorMessage: option?.errorMessage,
+  });
+};
+
+export const notImplemented = (message?: string, option?: ErrorOption) => {
+  return new NotImplementedException({
     message,
     errorMessage: option?.errorMessage,
   });

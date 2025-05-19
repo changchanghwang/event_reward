@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { EventRepository } from './repository';
+import { EventRepository, FindCondition } from './repository';
 import { Event, EventStatus, EventType } from '../domain/model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { conflict, internalServerError, notFound } from '@libs/exceptions';
 import { Repository } from '@libs/ddd/repository';
+import { EventSpec } from '@services/events/domain/specs/event-spec';
+import { FindOption } from '@libs/db';
 
 @Injectable()
 export class EventRepositoryImpl extends Repository implements EventRepository {
@@ -38,13 +40,18 @@ export class EventRepositoryImpl extends Repository implements EventRepository {
   }
 
   async find(
-    conditions: { type?: EventType; status?: EventStatus },
+    conditions: FindCondition,
     options?: { limit: number; page: number },
   ): Promise<Event[]> {
-    const { type, status } = conditions;
+    const { type, status, startAtPeriod, endAtPeriod } = conditions;
 
     const events = this.eventModel.find({
-      ...this.strip({ type, status }),
+      ...this.strip({
+        type,
+        status,
+        startAt: this.range(startAtPeriod.from, startAtPeriod.to),
+        endAt: this.range(endAtPeriod.from, endAtPeriod.to),
+      }),
     });
 
     if (options) {
@@ -55,15 +62,17 @@ export class EventRepositoryImpl extends Repository implements EventRepository {
     return (await events.exec()).map((event) => new Event(event));
   }
 
-  async count(conditions: {
-    type?: EventType;
-    status?: EventStatus;
-  }): Promise<number> {
-    const { type, status } = conditions;
+  async count(conditions: FindCondition): Promise<number> {
+    const { type, status, startAtPeriod, endAtPeriod } = conditions;
 
     return this.eventModel
       .countDocuments({
-        ...this.strip({ type, status }),
+        ...this.strip({
+          type,
+          status,
+          startAt: this.range(startAtPeriod.from, startAtPeriod.to),
+          endAt: this.range(endAtPeriod.from, endAtPeriod.to),
+        }),
       })
       .exec();
   }
@@ -78,5 +87,16 @@ export class EventRepositoryImpl extends Repository implements EventRepository {
     }
 
     return new Event(event);
+  }
+
+  async findSatisfying(
+    spec: EventSpec,
+    options?: FindOption,
+  ): Promise<Event[]> {
+    return spec.findSatisfiedElementsFrom(this, options);
+  }
+
+  async countSatisfying(spec: EventSpec): Promise<number> {
+    return spec.countSatisfiedElementsFrom(this);
   }
 }

@@ -20,4 +20,9 @@ export class EventController {
   async retrieve(@Param('id') id: string) {
     return this.eventService.retrieve(id);
   }
+
+  @Post(':id/start')
+  async start(@Param('id') id: string) {
+    return this.eventService.start(id);
+  }
 }

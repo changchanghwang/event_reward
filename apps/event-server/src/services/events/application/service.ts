@@ -40,4 +40,11 @@ export class EventService {
   async retrieve(id: string): Promise<Event> {
     return await this.eventRepository.findOneOrFail(id);
   }
+
+  async start(id: string) {
+    const event = await this.eventRepository.findOneOrFail(id);
+    event.start();
+    await this.eventRepository.save([event]);
+    return event;
+  }
 }

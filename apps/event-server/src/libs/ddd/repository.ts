@@ -15,7 +15,7 @@ export abstract class Repository {
     if (start && end) {
       return {
         $gte: start,
-        $lte: end,
+        $lt: end,
       };
     }
 
@@ -27,10 +27,20 @@ export abstract class Repository {
 
     if (end) {
       return {
-        $lte: end,
+        $lt: end,
       };
     }
 
     return undefined;
+  }
+
+  protected inValues(values?: string[]) {
+    if (!values) {
+      return undefined;
+    }
+
+    return {
+      $in: values,
+    };
   }
 }

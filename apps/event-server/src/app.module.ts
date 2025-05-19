@@ -5,7 +5,9 @@ import { DatabaseModule } from '@libs/db';
 import { EventsModule } from '@services/events/module';
 import { RewardsModule } from '@services/rewards/module';
 import { RewardRequestsModule } from '@services/reward-requests/module';
-import { ParticipantsModule } from '@services/participants/module';
+import { ActivitiesModule } from '@services/activities/module';
+import { KafkaClientModule } from '@libs/kafka';
+import { RequestIdModule } from '@libs/request';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -17,7 +19,9 @@ import { ParticipantsModule } from '@services/participants/module';
     EventsModule,
     RewardsModule,
     RewardRequestsModule,
-    ParticipantsModule,
+    ActivitiesModule,
+    RequestIdModule,
+    KafkaClientModule,
   ],
   controllers: [],
   providers: [],

@@ -129,6 +129,7 @@ services:
         cub kafka-ready -b kafka:29092 1 60 && \
         echo 'Kafka is ready. Creating topics...' && \
         kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic auth-server-ddd-event --partitions 1 --replication-factor 1 && \
+        kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic event-server-ddd-event --partitions 1 --replication-factor 1 && \
         echo 'Topic creation command executed.'
       "
     restart: on-failure
