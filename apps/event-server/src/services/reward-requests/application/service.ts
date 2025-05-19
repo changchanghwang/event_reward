@@ -10,6 +10,7 @@ import {
 import { RewardRequest } from '../domain/model';
 import { RewardRequestValidator } from '../domain/services';
 import { RewardRequestRepository } from '../infrastructure/repository';
+import { type User, UserRole } from '@services/external/domain/type';
 
 @Injectable()
 export class RewardRequestService {
@@ -47,16 +48,23 @@ export class RewardRequestService {
     return rewardRequest;
   }
 
-  async list(listCommand: ListCommand): Promise<Paginated<RewardRequest>> {
+  async list(
+    listCommand: ListCommand,
+    user: User,
+  ): Promise<Paginated<RewardRequest>> {
     const { userId, eventId, status, page, limit } = listCommand;
 
     const [rewardRequests, count] = await Promise.all([
       this.rewardRequestRepository.find(
-        { userId, eventId, status },
+        {
+          userId: user.role === UserRole.USER ? user.id : userId,
+          eventId,
+          status,
+        },
         { limit, page },
       ),
       this.rewardRequestRepository.count({
-        userId,
+        userId: user.role === UserRole.USER ? user.id : userId,
         eventId,
         status,
       }),

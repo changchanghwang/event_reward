@@ -6,12 +6,14 @@ import {
   Param,
   Post,
   Query,
+  Req,
 } from '@nestjs/common';
 import {
   ListCommand,
   RegisterCommand,
 } from '@services/reward-requests/commands';
 import { RewardRequestService } from '@services/reward-requests/application/service';
+import { UserRole } from '@services/external/domain/type';
 
 @Controller('/reward-requests')
 export class RewardRequestController {
@@ -25,8 +27,12 @@ export class RewardRequestController {
 
   @Get()
   @HttpCode(200)
-  async list(@Query() listCommand: ListCommand) {
-    return this.rewardRequestService.list(listCommand);
+  async list(@Query() listCommand: ListCommand, @Req() req: Request) {
+    const user = {
+      id: req.headers['x-user-id'] as string,
+      role: req.headers['x-user-role'] as UserRole,
+    };
+    return this.rewardRequestService.list(listCommand, user);
   }
 
   @Post(':id/approve')

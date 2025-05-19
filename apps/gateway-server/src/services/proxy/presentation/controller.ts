@@ -126,6 +126,17 @@ export class ProxyController {
     return await this.proxyRequest(this.eventServerUrl, req, res);
   }
 
+  @Get('/reward-requests')
+  @Roles(Role.OPERATOR, Role.AUDITOR, Role.USER)
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
+  async proxyPrivateRewardRequestListRoutes(
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    return await this.proxyRequest(this.eventServerUrl, req, res);
+  }
+
   @Post(['/reward-requests/:id/approve', '/reward-requests/:id/reject'])
   @Roles(Role.OPERATOR)
   @UseGuards(RolesGuard)
