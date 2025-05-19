@@ -32,9 +32,6 @@ export class Reward {
   isManual: boolean;
 
   @Prop({ required: true })
-  fulfilled: number;
-
-  @Prop({ required: true })
   required: number;
 
   constructor(args: {
@@ -45,7 +42,6 @@ export class Reward {
     referenceId?: string;
     isManual: boolean;
     required: number;
-    fulfilled: number;
   }) {
     if (args) {
       this.id = args.id;
@@ -55,7 +51,6 @@ export class Reward {
       this.referenceId = args.referenceId;
       this.isManual = args.isManual;
       this.required = args.required;
-      this.fulfilled = args.fulfilled;
     }
   }
 
@@ -78,7 +73,6 @@ export class Reward {
       referenceId: args.referenceId,
       isManual: args.isManual,
       required: args.required,
-      fulfilled: 0,
     });
   }
 }

@@ -42,8 +42,4 @@ export class RewardService {
       count,
     };
   }
-
-  async onActivityRegistered(event: ActivityRegisteredEvent) {
-    console.log('!!!', event);
-  }
 }
