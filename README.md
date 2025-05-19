@@ -162,7 +162,7 @@ flowchart LR
 A[10분마다 실행] --> B[startAt이 현재보다 과거인 SCHEDULED 상태의 이벤트 검색]
 B --> C{이벤트가 존재하는가?}
 C -->|No| AAA[종료]
-C -->|Yes| D[event.start()]
+C -->|Yes| D[event.start]
 D --> AAA
 ```
 
