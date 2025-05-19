@@ -34,8 +34,8 @@ export class ActivityGenerator {
     const [todayAttendance] = await this.activityRepository.find({
       eventIds: [eventId],
       userId,
-      participatedOnStart: startOfDay(new Date(participatedOn)),
-      participatedOnEnd: add(startOfDay(new Date(participatedOn)), 1, 'day'),
+      participatedOnStart: startOfDay(participatedOn),
+      participatedOnEnd: add(startOfDay(participatedOn), 1, 'day'),
     });
 
     if (todayAttendance) {

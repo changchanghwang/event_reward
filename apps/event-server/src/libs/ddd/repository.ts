@@ -11,7 +11,7 @@ export abstract class Repository {
     );
   }
 
-  protected range(start?: Date, end?: Date) {
+  protected range(start?: Date | CalendarDate, end?: Date | CalendarDate) {
     if (start && end) {
       return {
         $gte: start,

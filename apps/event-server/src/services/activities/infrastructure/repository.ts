@@ -3,8 +3,8 @@ import type { Activity } from '../domain/model';
 export type FindCondition = {
   eventIds?: string[];
   userId?: string;
-  participatedOnStart?: Date;
-  participatedOnEnd?: Date;
+  participatedOnStart?: CalendarDate;
+  participatedOnEnd?: CalendarDate;
 };
 
 export interface ActivityRepository {

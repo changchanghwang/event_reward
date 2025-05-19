@@ -16,6 +16,6 @@ import { ActivityGenerator } from '@services/activities/domain/services';
     },
     ActivityGenerator,
   ],
-  exports: [],
+  exports: ['ActivityRepository'],
 })
 export class ActivitiesModule {}

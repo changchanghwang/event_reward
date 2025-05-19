@@ -4,10 +4,11 @@ import { RewardRequestController } from './presentation/controller';
 import { RewardRequestService } from './application';
 import { RewardsModule } from '@services/rewards/module';
 import { EventsModule } from '@services/events/module';
-import { RewardRequestValidator } from '@services/reward-requests/domain/services/reward-request-validator';
+import { RewardRequestValidator } from '@services/reward-requests/domain/services';
+import { ActivitiesModule } from '@services/activities/module';
 
 @Module({
-  imports: [RewardsModule, EventsModule],
+  imports: [RewardsModule, EventsModule, ActivitiesModule],
   controllers: [RewardRequestController],
   providers: [
     RewardRequestService,

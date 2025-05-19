@@ -44,6 +44,8 @@ export class LoginActivityService {
       ),
     );
 
-    await this.activityRepository.save(activities);
+    if (!!activities.length) {
+      await this.activityRepository.save(activities);
+    }
   }
 }
