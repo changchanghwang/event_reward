@@ -67,21 +67,21 @@ docker compose up [실행 할 service 이름(전부 실행할 것이라면 입�
 
 ```mermaid
 flowchart TB
-    Client[클라이언트] --> Gateway[API Gateway\n:4042]
+    Client[클라이언트] --> Gateway[API Gateway:4042]
 
-    Gateway --> AuthServer[Auth Server\n:4040]
-    Gateway --> EventServer[Event Server\n:4041]
+    Gateway --> AuthServer[Auth Server:4040]
+    Gateway --> EventServer[Event Server:4041]
 
     subgraph Auth[인증 서비스]
-        AuthServer --> AuthDB[(Auth DB\nMongoDB\n:27017)]
+        AuthServer --> AuthDB[(Auth DB:27017)]
     end
 
     subgraph Message[메시지 브로커]
-        Kafka[Kafka\n:9092]
+        Kafka[Kafka:9092]
     end
 
     subgraph Event[이벤트 서비스]
-        EventServer --> EventDB[(Event DB\nMongoDB\n:27018)]
+        EventServer --> EventDB[(Event DB:27018)]
     end
 
 
