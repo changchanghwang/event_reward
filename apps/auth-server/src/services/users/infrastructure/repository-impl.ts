@@ -49,6 +49,7 @@ export class UserRepositoryImpl implements UserRepository {
 
   async saveEvents(events: DddEvent[]): Promise<void> {
     await Promise.all(events.map((event) => this.eventModel.create(event)));
+    // TODO: 이벤트 발행 부는 CDC를 이용하는것으로 변경해야한다.
     events.forEach((event) => {
       this.kafkaClient.emit('auth-server-ddd-event', JSON.stringify(event));
     });
